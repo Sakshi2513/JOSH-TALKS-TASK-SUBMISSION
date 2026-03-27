@@ -75,10 +75,19 @@ Fine-tune OpenAI's Whisper-small model on ~10 hours of Hindi conversational spee
 - **Output:** train_data.csv with 104 samples (recording_id, audio_url, transcript, duration)
 
 #### Part B: Fine-tuning Configuration
-<img width="935" height="387" alt="image" src="https://github.com/user-attachments/assets/bfaa1902-1778-4010-a6a4-6d06faeb450e" />
+**Parameter**	           **Value**	                       **Rationale**
+Model	               openai/whisper-small	         244M parameters, balanced for Hindi
+Epochs	                      3	                     Prevent overfitting on small dataset
+Batch Size	                  4                  	 CPU memory constraint
+Learning Rate	             1e-5	                 Standard for fine-tuning
+Optimizer	                 AdamW	                 Weight decay for regularization
+Training Time	             2h 37m	                 CPU-only training
 
 #### Part C: WER Results
-<img width="848" height="230" alt="image" src="https://github.com/user-attachments/assets/d7e38932-972e-4856-91bb-2db0c89bd633" />
+**Model**	                           **Hindi WER**
+Whisper Small (Pretrained)	              98.69%
+Fine-tuned Whisper Small	              95.41%
+Improvement	                              +3.28%
 
 #### Part D: Error Sampling Strategy
 - Total Errors: 30 utterances
@@ -87,10 +96,18 @@ Fine-tune OpenAI's Whisper-small model on ~10 hours of Hindi conversational spee
 - File: sampled_errors_25.csv (unbiased, reproducible)
 
 #### Part E: Error Taxonomy (5 Categories)
-<img width="956" height="330" alt="image" src="https://github.com/user-attachments/assets/70290a6f-02f3-4c4b-9b5f-6d3ead63c30e" />
+**Category**	               **Frequency**	                **Example**	                  **Root Cause**
+Repetition/Hallucination	        28%	                    "हां" repeated 20+ times	        No diversity penalty
+Word Substitution	                24%	                    "एक्चुली" → "शर"	                Phonetic confusion
+English Word Mishandling	        18%	                    "six" → "सिक्थ"	                Code-switching challenge
+Short Output/Truncation	            16%	                    50% of reference length	        Early termination
+Punctuation & Formatting	        14%	                    Missing spaces	                Tokenizer limitation
 
 #### Part F: Top 3 Actionable Fixes
-<img width="881" height="214" alt="image" src="https://github.com/user-attachments/assets/ce5ff4a2-a4d5-42ae-8120-9a67087c469d" />
+**Rank**	     **Fix**	             **Expected Impact**	         **Complexity**
+   1	   Language + Task Forcing	      5-10% WER reduction	         Low (Implemented)
+   2	   Repetition Penalty (1.5)	      3-5% WER reduction	         Low
+   3	   Data Augmentation (5x)	      10-15% WER reduction	         Medium
 
 #### Part G: Implemented Fix - Language Forcing
 **Code:**
@@ -101,7 +118,11 @@ predicted_ids = model.generate(input_features, forced_decoder_ids=forced_decoder
 ```
 
 **Results:**
-<img width="708" height="221" alt="image" src="https://github.com/user-attachments/assets/43a8f50f-b86f-4cad-b212-b7bbb7a5894c" />
+**Metric**	      **Before Fix**	  **After Fix**	   **Improvement**
+Overall WER	          95.24%	         94.69%	           +0.55%
+Best Sample	          95.8%	             89.3%	           +6.5%
+Improved Samples	    -	             4/10	            40%
+
 
 ---
 
