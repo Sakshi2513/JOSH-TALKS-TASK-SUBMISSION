@@ -75,23 +75,10 @@ Fine-tune OpenAI's Whisper-small model on ~10 hours of Hindi conversational spee
 - **Output:** train_data.csv with 104 samples (recording_id, audio_url, transcript, duration)
 
 #### Part B: Fine-tuning Configuration
-```
-**Parameter**	           **Value**	                       **Rationale**
-Model	               openai/whisper-small	         244M parameters, balanced for Hindi
-Epochs	                      3	                     Prevent overfitting on small dataset
-Batch Size	                  4                  	 CPU memory constraint
-Learning Rate	             1e-5	                 Standard for fine-tuning
-Optimizer	                 AdamW	                 Weight decay for regularization
-Training Time	             2h 37m	                 CPU-only training
-```
+<img width="929" height="392" alt="image" src="https://github.com/user-attachments/assets/610d93d7-0a02-4e28-bc9a-9e042cbf632b" />
 
 #### Part C: WER Results
-```
-**Model**	                           **Hindi WER**
-Whisper Small (Pretrained)	              98.69%
-Fine-tuned Whisper Small	              95.41%
-Improvement	                              +3.28%
-```
+<img width="977" height="243" alt="image" src="https://github.com/user-attachments/assets/6d613e66-3d22-406f-ab36-922fed00f025" />
 
 #### Part D: Error Sampling Strategy
 - Total Errors: 30 utterances
@@ -100,22 +87,10 @@ Improvement	                              +3.28%
 - File: sampled_errors_25.csv (unbiased, reproducible)
 
 #### Part E: Error Taxonomy (5 Categories)
-```
-**Category**	               **Frequency**	                **Example**	                  **Root Cause**
-Repetition/Hallucination	        28%	                    "हां" repeated 20+ times	        No diversity penalty
-Word Substitution	                24%	                    "एक्चुली" → "शर"	                Phonetic confusion
-English Word Mishandling	        18%	                    "six" → "सिक्थ"	                Code-switching challenge
-Short Output/Truncation	            16%	                    50% of reference length	        Early termination
-Punctuation & Formatting	        14%	                    Missing spaces	                Tokenizer limitation
-```
+<img width="1145" height="361" alt="image" src="https://github.com/user-attachments/assets/bda4a422-fcca-4870-a85b-e2e40656a71a" />
 
 #### Part F: Top 3 Actionable Fixes
-```
-**Rank**	     **Fix**	             **Expected Impact**	         **Complexity**
-   1	   Language + Task Forcing	      5-10% WER reduction	         Low (Implemented)
-   2	   Repetition Penalty (1.5)	      3-5% WER reduction	         Low
-   3	   Data Augmentation (5x)	      10-15% WER reduction	         Medium
-```
+<img width="1001" height="250" alt="image" src="https://github.com/user-attachments/assets/a39d8b9f-393c-4036-ae3e-f268bd6b4701" />
 
 #### Part G: Implemented Fix - Language Forcing
 **Code:**
