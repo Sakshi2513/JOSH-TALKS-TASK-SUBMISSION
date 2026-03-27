@@ -94,9 +94,11 @@ Fine-tune OpenAI's Whisper-small model on ~10 hours of Hindi conversational spee
 
 #### Part G: Implemented Fix - Language Forcing
 **Code:**
+```
 python
 forced_decoder_ids = processor.get_decoder_prompt_ids(language="hi", task="transcribe")
 predicted_ids = model.generate(input_features, forced_decoder_ids=forced_decoder_ids)
+```
 
 **Results:**
 <img width="708" height="221" alt="image" src="https://github.com/user-attachments/assets/43a8f50f-b86f-4cad-b212-b7bbb7a5894c" />
